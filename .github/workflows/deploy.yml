@@ -19,7 +19,7 @@ jobs:
       - name: Dodaj serwer do known_hosts
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan -p ${{ secret.SSH_PORT }} $${{ secret.SSH_HOST }} >> ~/.ssh/knowk_hosts
+          ssh-keyscan -p ${{ secrets.SSH_PORT }} $${{ secrets.SSH_HOST }} >> ~/.ssh/knowk_hosts
 
       - name: Wdróż przez rsync
         run: |
