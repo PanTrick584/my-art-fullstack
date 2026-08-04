@@ -23,6 +23,6 @@ jobs:
 
       - name: Wdróż przez rsync
         run: |
-          rsync -avz --delete -e "ssh -p ${{ secrets.SSH_POST }}" \
+          rsync -avz --delete -e "ssh -p ${{ secrets.SSH_PORT }}" \
           --exclude='.git' --exclude='.github' \
           ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:var/www/html/
