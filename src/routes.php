@@ -6,6 +6,9 @@ use App\Http\Router;
 
 $router = new Router();
 
-$router->get('/', function () {
-    echo 'Hello from PHP';
+$router->get('/api/hello', function () {
+    header('Content-Type: application/json');
+    echo json_encode(['message' => 'Hello from PHP']);
 });
+
+$router->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
