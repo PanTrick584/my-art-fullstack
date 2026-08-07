@@ -2,15 +2,15 @@ import styles from './App.module.scss'
 import { useApi } from './hooks/useApi'
 
 interface HelloResponse {
-  message: string
+    message: string
 }
 
 function App() {
-  const { data, loading, error } = useApi<HelloResponse>('/hello')
+    const { data, loading, error } = useApi<HelloResponse>('/hello')
 
-  const text = error ? `Błąd: ${error}` : loading ? 'Ładowanie...' : data?.message
+    const text = error ? `Błąd: ${error}` : loading ? 'Ładowanie...' : data?.message + ' and React :)!';
 
-  return <h1 className={styles.heading}>{text}</h1>
+    return <h1 className={styles.heading}>{text}</h1>
 }
 
 export default App
