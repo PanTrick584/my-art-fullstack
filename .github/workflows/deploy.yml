@@ -11,6 +11,21 @@ jobs:
       - name: Checkout kodu
         uses: actions/checkout@v4
 
+      - name: Ustaw Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Zainstaluj zależności frontendu
+        working-directory: frontend
+        run: npm ci
+
+      - name: Zbuduj frontend
+        working-directory: frontend
+        run: npm run build
+
       - name: Załaduj klucz SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
@@ -25,4 +40,5 @@ jobs:
         run: |
           rsync -avz --delete -e "ssh -p ${{ secrets.SSH_PORT }}" \
             --exclude='.git' --exclude='.github' --exclude='.env' \
+            --exclude='frontend/node_modules' --exclude='notes-private' \
             ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/html/
