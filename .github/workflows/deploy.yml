@@ -11,6 +11,15 @@ jobs:
       - name: Checkout kodu
         uses: actions/checkout@v4
 
+      - name: Ustaw PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+
+      - name: Zainstaluj zależności PHP
+        run: composer install --no-dev --optimize-autoloader --prefer-dist
+
       - name: Ustaw Node.js
         uses: actions/setup-node@v4
         with:
