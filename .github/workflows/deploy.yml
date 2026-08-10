@@ -55,4 +55,4 @@ jobs:
       - name: Uruchom migracje na serwerze
         run: |
           ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
-            "cd /var/www/html && sudo docker compose -f docker-compose.prod.yml exec -T php php database/migrate.php"
+            "sudo /usr/bin/docker compose -f /var/www/html/docker-compose.prod.yml exec -T php php database/migrate.php"
