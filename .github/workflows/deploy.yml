@@ -51,3 +51,8 @@ jobs:
             --exclude='.git' --exclude='.github' --exclude='.env' \
             --exclude='frontend/node_modules' --exclude='notes-private' \
             ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/html/
+
+      - name: Uruchom migracje na serwerze
+        run: |
+          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+            "cd /var/www/html && sudo docker compose -f docker-compose.prod.yml exec -T php php database/migrate.php"
