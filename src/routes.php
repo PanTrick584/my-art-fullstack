@@ -2,12 +2,15 @@
 
 declare(strict_types=1);
 
-use App\Controller\ArtworkController;
+use App\Database\Connection;
 use App\Database\QueryBuilder;
 use App\Http\Router;
 use App\Repository\ArtworkRepository;
+use App\Repository\ImageRepository;
 use App\Service\ArtworkService;
-use App\Database\Connection;
+use App\Service\ImageService;
+use App\Controller\ImageController;
+use App\Controller\ArtworkController;
 
 $router = new Router();
 $pdo = Connection::create();
@@ -17,13 +20,21 @@ $artworkRepository = new ArtworkRepository($queryBuilder);
 $artworkService = new ArtworkService($artworkRepository);
 $artworkController = new ArtworkController($artworkService);
 
+$imageRepository = new ImageRepository($queryBuilder);
+$imageService = new ImageService($imageRepository);
+$imageController = new ImageController($imageService);
+
 $router->get('/api/hello', function () {
     header('Content-Type: application/json');
     echo json_encode(['message' => 'Hello from PHP! Artworks app here!']);
 });
 
+//ARTWORKS
 $router->get('/api/artworks', $artworkController->index(...));
 $router->post('/api/artworks', $artworkController->store(...));
+// IMAGES
+$router->get('/api/images', $imageController->index(...));
+$router->post('/api/images', $imageController->store(...));
 
 $router->get('/api/artworks/paintings', function () {
     header('Content-Type: application/json');

@@ -1,16 +1,14 @@
-import styles from './App.module.scss'
-import { useApi } from './hooks/useApi'
-
-interface HelloResponse {
-    message: string
-}
+import { Routes, Route } from 'react-router-dom'
+import Home from './pages/Home'
+import Admin from './pages/Admin'
 
 function App() {
-    const { data, loading, error } = useApi<HelloResponse>('/hello')
-
-    const text = error ? `Błąd: ${error}` : loading ? 'Ładowanie...' : data?.message + ' and React :)!';
-
-    return <h1 className={styles.heading}>{text}</h1>
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/admin" element={<Admin />} />
+    </Routes>
+  )
 }
 
 export default App
