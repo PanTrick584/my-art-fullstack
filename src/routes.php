@@ -21,8 +21,8 @@ $artworkService = new ArtworkService($artworkRepository);
 $artworkController = new ArtworkController($artworkService);
 
 $imageRepository = new ImageRepository($queryBuilder);
-$imageService = new ImageService($imageRepository);
-$imageController = new ImageController($imageService);
+$imageService = new ImageService($imageRepository, $pdo);
+$imageController = new ImageController($imageService, $pdo);
 
 $router->get('/api/hello', function () {
     header('Content-Type: application/json');
@@ -50,5 +50,7 @@ $router->get('/api/artworks/photographs', function () {
     header('Content-Type: application/json');
     echo json_encode(['message' => 'Artworks']);
 });
+
+$router->post('/api/images/bulk', $imageController->storeBulk(...));
 
 $router->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);

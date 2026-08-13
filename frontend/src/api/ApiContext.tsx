@@ -9,10 +9,12 @@ const ApiContext = createContext<ApiFetch | null>(null)
 export function ApiProvider({ children }: { children: ReactNode }) {
   const apiFetch = useMemo<ApiFetch>(() => {
     return async (path, options) => {
+      const isFormData = options?.body instanceof FormData
+
       const response = await fetch(`${API_BASE}${path}`, {
         ...options,
         headers: {
-          'Content-Type': 'application/json',
+          ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
           ...options?.headers,
         },
       })
