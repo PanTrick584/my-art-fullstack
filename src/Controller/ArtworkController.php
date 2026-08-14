@@ -14,8 +14,10 @@ class ArtworkController
 
     public function index(): void
     {
+        $id = (int) ($_GET['id'] ?? 0);
+
         header('Content-Type: application/json');
-        echo json_encode($this->artworkService->getAllArtworks());
+        echo json_encode($this->artworkService->getAllArtworks($id));
     }
 
     public function store(): void
