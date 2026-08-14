@@ -8,7 +8,7 @@ function EditArtwork() {
     const { id } = useParams();
     const artworkId = Number(id);
 
-    const { data, loading, error } = useApi<Artwork[]>(`/artworks?id=${artworkId}`)
+    const { data, loading } = useApi<Artwork[]>(`/artworks?id=${artworkId}`)
 
     const [artwork] = data ?? [];
     const initialValue = {
