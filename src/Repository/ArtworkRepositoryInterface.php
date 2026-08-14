@@ -9,7 +9,8 @@ use App\Entity\Artwork;
 
 interface ArtworkRepositoryInterface
 {
-    public function findAll(): array;
+    public function findAll(int $id): array;
 
     public function insert(CreateArtworkDto $dto): Artwork;
+    public function update(int $id, CreateArtworkDto $dto): Artwork;
 }

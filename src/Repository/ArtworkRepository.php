@@ -12,9 +12,16 @@ use PDOException;
 class ArtworkRepository implements ArtworkRepositoryInterface
 {
     public function __construct(private QueryBuilder $queryBuilder) {}
-    public function findAll(): array
+    public function findAll(int $id): array
     {
-        $rows = $this->queryBuilder->table('artworks')->get();
+        if (0 !== $id) {
+            $rows = $this->queryBuilder->table('artworks')
+                ->where('id', '=', $id)
+                ->get();
+        } else {
+            $rows = $this->queryBuilder->table('artworks')->get();
+        }
+
 
         return array_map(
             fn(array $row) => new Artwork(
