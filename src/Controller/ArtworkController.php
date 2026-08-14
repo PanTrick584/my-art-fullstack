@@ -37,4 +37,25 @@ class ArtworkController
         http_response_code(201);
         echo json_encode($artwork);
     }
+
+    public function update(): void
+    {
+        $body = file_get_contents('php://input');
+        $data = json_decode($body, true);
+        $id = (int) ($data['id'] ?? 0);
+
+        header('Content-Type: application/json');
+
+        try {
+            $dto = CreateArtworkDto::fromArray($data);
+            $artwork = $this->artworkService->updateArtwork($id, $dto);
+        } catch (InvalidArgumentException $e) {
+            http_response_code(422);
+            echo json_encode(['error' => $e->getMessage()]);
+            return;
+        }
+
+        http_response_code(200);
+        echo json_encode($artwork);
+    }
 }

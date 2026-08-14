@@ -54,4 +54,31 @@ class ArtworkRepository implements ArtworkRepositoryInterface
             images: $dto->images
         );
     }
+
+    public function update(int $id, CreateArtworkDto $dto): Artwork
+    {
+        try {
+            $id = $this->queryBuilder->table('artworks')
+                ->where('id', '=', $id)
+                ->update([
+                    'name' => $dto->name,
+                    'category' => $dto->category,
+                    'dimensions' => $dto->dimensions,
+                    'year_of_creation' => $dto->yearOfCreation,
+                    'price' => $dto->price
+                ]);
+        } catch (PDOException $e) {
+            throw $e;
+        }
+
+        return new Artwork(
+            id: $id,
+            name: $dto->name,
+            category: $dto->category,
+            dimensions: $dto->dimensions,
+            yearOfCreation: $dto->yearOfCreation,
+            price: $dto->price,
+            images: $dto->images
+        );
+    }
 }

@@ -59,6 +59,17 @@ class QueryBuilder
         return (int) $stmt->fetchColumn();
     }
 
+    public function update(array $data): int
+    {
+        $assignments = implode(', ', array_map(fn($key) => "{$key} = :{$key}", array_keys($data)));
+        $sql = "UPDATE {$this->table} SET {$assignments}" . $this->whereClause() . " RETURNING id";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([...$data, ...$this->bindings]);
+
+        return (int) $stmt->fetchColumn();
+    }
+
     public function count(): int
     {
         $sql = "SELECT COUNT(*) FROM {$this->table}" . $this->whereClause();
