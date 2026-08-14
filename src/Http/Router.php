@@ -19,6 +19,11 @@ class Router
         $this->routes['POST'][$path] = $handler;
     }
 
+    public function put(string $path, callable $handler)
+    {
+        $this->routes['PUT'][$path] = $handler;
+    }
+
     public function dispatch(string $method, string $requestUri)
     {
         $path = parse_url($requestUri, PHP_URL_PATH);
@@ -29,6 +34,7 @@ class Router
             http_response_code(404);
             header('Content-Type: application/json');
             echo json_encode(['error' => 'NotFound']);
+            return;
         }
 
         $handler();

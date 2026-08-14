@@ -32,9 +32,11 @@ $router->get('/api/hello', function () {
 //ARTWORKS
 $router->get('/api/artworks', $artworkController->index(...));
 $router->post('/api/artworks', $artworkController->store(...));
+$router->put('/api/artworks', $artworkController->update(...));
 // IMAGES
 $router->get('/api/images', $imageController->index(...));
 $router->post('/api/images', $imageController->store(...));
+$router->post('/api/images/bulk', $imageController->storeBulk(...));
 
 $router->get('/api/artworks/paintings', function () {
     header('Content-Type: application/json');
@@ -51,6 +53,5 @@ $router->get('/api/artworks/photographs', function () {
     echo json_encode(['message' => 'Artworks']);
 });
 
-$router->post('/api/images/bulk', $imageController->storeBulk(...));
 
 $router->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);

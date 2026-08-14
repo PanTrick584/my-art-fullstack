@@ -21,4 +21,9 @@ class ArtworkService
     {
         return $this->artworkRepository->insert($dto);
     }
+
+    public function updateArtwork(int $id, CreateArtworkDto $dto): Artwork
+    {
+        return $this->artworkRepository->update($id, $dto);
+    }
 }
