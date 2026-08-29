@@ -1,11 +1,11 @@
 import { useState, type FormEvent } from 'react'
 import styles from './ArtworkForm.module.scss'
 import { useApiClient } from '../api/ApiContext'
-import type { ArtworkFormType } from '../types/artwork'
+import type { Artwork, ArtworkFormType } from '../types/artwork'
 
 interface InitialValueType {
     initialValue: ArtworkFormType,
-    handler: Function,
+    handler: (form: ArtworkFormType) => Promise<Artwork>,
     componentState: 'add' | 'edit'
 }
 
@@ -69,7 +69,7 @@ function ArtworkForm({ initialValue, handler, componentState }: InitialValueType
                 })
             }
 
-            setForm(componentState === 'add' ? initialState : componentState === 'edit' ? artwork : '')
+            setForm(componentState === 'add' ? initialState : artwork);
             setImages([])
             setSuccess(true)
         } catch (err) {

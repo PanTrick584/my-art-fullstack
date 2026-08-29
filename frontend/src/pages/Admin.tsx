@@ -1,20 +1,11 @@
 import { Link } from 'react-router-dom'
 import styles from './Admin.module.scss'
 import { useApi } from '../hooks/useApi'
-
-interface Artwork {
-    id: number
-    name: string
-    category: string
-    dimensions: string
-    yearOfCreation: string
-    price: string
-}
+import type { Artwork } from '../types/artwork'
 
 function Admin() {
     const { data: artworks, loading, error } = useApi<Artwork[]>('/artworks')
-
-    artworks?.sort((a, b) => b.id - a.id);
+    const sortedArtworks = [...(artworks ?? [])].sort((a, b) => b.id - a.id);
 
     return (
         <div className={styles.wrapper}>
@@ -38,11 +29,13 @@ function Admin() {
                         </tr>
                     </thead>
                     <tbody>
-                        {artworks.map((artwork) => (
+                        {sortedArtworks.map((artwork) => (
                             <tr key={artwork.id}>
-                                <Link to={`/admin/${artwork.id}/edit-artwork`}>
-                                    <td>{artwork.name}</td>
-                                </Link>
+                                <td>
+                                    <Link to={`/admin/${artwork.id}/edit-artwork`}>
+                                        {artwork.name}
+                                    </Link>
+                                </td>
                                 <td>{artwork.category}</td>
                                 <td>{artwork.dimensions}</td>
                                 <td>{artwork.yearOfCreation}</td>

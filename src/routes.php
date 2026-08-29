@@ -11,6 +11,11 @@ use App\Service\ArtworkService;
 use App\Service\ImageService;
 use App\Controller\ImageController;
 use App\Controller\ArtworkController;
+use App\Controller\AuthController;
+use App\Repository\UserRepository;
+use App\Service\AuthService;
+
+session_start();
 
 $router = new Router();
 $pdo = Connection::create();
@@ -23,6 +28,10 @@ $artworkController = new ArtworkController($artworkService);
 $imageRepository = new ImageRepository($queryBuilder);
 $imageService = new ImageService($imageRepository, $pdo);
 $imageController = new ImageController($imageService, $pdo);
+
+$userRepository = new UserRepository($queryBuilder);
+$authService = new AuthService($userRepository);
+$authController = new AuthController($authService);
 
 $router->get('/api/hello', function () {
     header('Content-Type: application/json');
@@ -53,5 +62,12 @@ $router->get('/api/artworks/photographs', function () {
     echo json_encode(['message' => 'Artworks']);
 });
 
+$router->put('/api/artworks/status', $artworkController->updateStatus(...));
+
+// AUTH
+$router->get('/api/me', $authController->me(...));
+$router->post('/api/register', $authController->register(...));
+$router->post('/api/login', $authController->login(...));
+$router->post('/api/logout', $authController->logout(...));
 
 $router->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
