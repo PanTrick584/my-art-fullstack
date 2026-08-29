@@ -11,6 +11,7 @@ interface ArtworkRepositoryInterface
 {
     public function findAll(int $id): array;
 
-    public function insert(CreateArtworkDto $dto): Artwork;
-    public function update(int $id, CreateArtworkDto $dto): Artwork;
+    public function insert(CreateArtworkDto $dto, int $ownerId, string $status): Artwork;
+    public function update(int $id, CreateArtworkDto $dto, string $status): Artwork;
+    public function updateStatus(int $id, string $status): Artwork;
 }

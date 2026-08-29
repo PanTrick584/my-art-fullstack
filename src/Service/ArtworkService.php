@@ -17,13 +17,20 @@ class ArtworkService
         return $this->artworkRepository->findAll($id);
     }
 
-    public function createArtwork(CreateArtworkDto $dto): Artwork
+    public function createArtwork(CreateArtworkDto $dto, int $ownerId, string $role): Artwork
     {
-        return $this->artworkRepository->insert($dto);
+        $status = $role === 'admin' ? 'approved' : 'pending';
+        return $this->artworkRepository->insert($dto, $ownerId, $status);
     }
 
-    public function updateArtwork(int $id, CreateArtworkDto $dto): Artwork
+    public function updateArtwork(int $id, CreateArtworkDto $dto, string $role): Artwork
     {
-        return $this->artworkRepository->update($id, $dto);
+        $status = $role === 'admin' ? 'approved' : 'pending';
+        return $this->artworkRepository->update($id, $dto, $status);
+    }
+
+    public function updateStatus(int $id, string $status): Artwork
+    {
+        return $this->artworkRepository->updateStatus($id, $status);
     }
 }

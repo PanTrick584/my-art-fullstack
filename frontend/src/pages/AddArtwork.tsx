@@ -3,9 +3,9 @@ import { useApiClient } from '../api/ApiContext'
 import type { Artwork, ArtworkFormType } from '../types/artwork'
 
 function AddArtwork() {
-    const initialValue = {
+    const initialValue: ArtworkFormType = {
         name: '',
-        category: '',
+        category: 'drawing',
         dimensions: '',
         yearOfCreation: '',
         price: '',

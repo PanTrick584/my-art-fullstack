@@ -13,6 +13,8 @@ final class Artwork
         public readonly string $dimensions,
         public readonly string $yearOfCreation,
         public readonly string $price,
-        public readonly ?array $images
+        public readonly ?array $images,
+        public readonly string $status,
+        public readonly ?int $ownerId,
     ) {}
 }

@@ -16,7 +16,7 @@ final class CreateArtworkDto
         public readonly string $dimensions,
         public readonly string $yearOfCreation,
         public readonly string $price,
-        public readonly array $images
+        public readonly array $images,
     ) {
         if (!in_array($this->category, self::ALLOWED_CATEGORIES, true)) {
             throw new InvalidArgumentException("Invalid category: {$this->category}");
@@ -31,7 +31,7 @@ final class CreateArtworkDto
             dimensions: $data['dimensions'] ?? '',
             yearOfCreation: $data['yearOfCreation'] ?? '',
             price: $data['price'] ?? '',
-            images: $data['images'] ?? []
+            images: $data['images'] ?? [],
         );
     }
 }

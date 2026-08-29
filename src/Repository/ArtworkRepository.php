@@ -31,13 +31,15 @@ class ArtworkRepository implements ArtworkRepositoryInterface
                 dimensions: $row['dimensions'],
                 yearOfCreation: $row['year_of_creation'],
                 price: $row['price'],
-                images: $row['images'] ?? []
+                images: $row['images'] ?? [],
+                status: $row['status'],
+                ownerId: $row['owner_id'] !== null ? (int) $row['owner_id'] : null
             ),
             $rows
         );
     }
 
-    public function insert(CreateArtworkDto $dto): Artwork
+    public function insert(CreateArtworkDto $dto, int $ownerId, string $status): Artwork
     {
         try {
             $id = $this->queryBuilder->table('artworks')->insert([
@@ -45,7 +47,9 @@ class ArtworkRepository implements ArtworkRepositoryInterface
                 'category' => $dto->category,
                 'dimensions' => $dto->dimensions,
                 'year_of_creation' => $dto->yearOfCreation,
-                'price' => $dto->price
+                'price' => $dto->price,
+                'status' => $status,
+                'owner_id' => $ownerId
             ]);
         } catch (PDOException $e) {
             throw $e;
@@ -58,12 +62,15 @@ class ArtworkRepository implements ArtworkRepositoryInterface
             dimensions: $dto->dimensions,
             yearOfCreation: $dto->yearOfCreation,
             price: $dto->price,
-            images: $dto->images
+            images: $dto->images,
+            status: $status,
+            ownerId: $ownerId
         );
     }
 
-    public function update(int $id, CreateArtworkDto $dto): Artwork
+    public function update(int $id, CreateArtworkDto $dto, string $status): Artwork
     {
+        $row = $this->queryBuilder->table('artworks')->where('id', '=', $id)->first();
         try {
             $id = $this->queryBuilder->table('artworks')
                 ->where('id', '=', $id)
@@ -72,7 +79,8 @@ class ArtworkRepository implements ArtworkRepositoryInterface
                     'category' => $dto->category,
                     'dimensions' => $dto->dimensions,
                     'year_of_creation' => $dto->yearOfCreation,
-                    'price' => $dto->price
+                    'price' => $dto->price,
+                    'status' => $status,
                 ]);
         } catch (PDOException $e) {
             throw $e;
@@ -85,7 +93,36 @@ class ArtworkRepository implements ArtworkRepositoryInterface
             dimensions: $dto->dimensions,
             yearOfCreation: $dto->yearOfCreation,
             price: $dto->price,
-            images: $dto->images
+            images: $dto->images,
+            status: $status,
+            ownerId: $row['owner_id'] !== null ? (int) $row['owner_id'] : null
+        );
+    }
+
+    public function updateStatus(int $id, string $status): Artwork
+    {
+        $row = $this->queryBuilder->table('artworks')->where('id', '=', $id)->first();
+
+        try {
+            $id = $this->queryBuilder->table('artworks')
+                ->where('id', '=', $id)
+                ->update([
+                    'status' => $status,
+                ]);
+        } catch (PDOException $e) {
+            throw $e;
+        }
+
+        return new Artwork(
+            id: $id,
+            name: $row['name'],
+            category: $row['category'],
+            dimensions: $row['dimensions'],
+            yearOfCreation: $row['year_of_creation'],
+            price: $row['price'],
+            images: $row['images'] ?? [],
+            status: $status,
+            ownerId: $row['owner_id'] !== null ? (int) $row['owner_id'] : null
         );
     }
 }
