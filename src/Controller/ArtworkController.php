@@ -17,9 +17,12 @@ class ArtworkController
     public function index(): void
     {
         $id = (int) ($_GET['id'] ?? 0);
+        $role = (string) ($_SESSION['role'] ?? '');
+        $ownerId = (int) ($_SESSION['user_id'] ?? 0);
+        $status = (string) ($_GET['status'] ?? '');
 
         header('Content-Type: application/json');
-        echo json_encode($this->artworkService->getAllArtworks($id));
+        echo json_encode($this->artworkService->getAllArtworks($id, $role, $ownerId, $status));
     }
 
     public function store(): void

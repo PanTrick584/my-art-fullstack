@@ -8,9 +8,9 @@ function App() {
     return (
         <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/admin/add-artwork" element={<AddArtwork />} />
-            <Route path="/admin/:id/edit-artwork" element={<EditArtwork />} />
+            <Route path="/artworks" element={<Admin />} />
+            <Route path="/artworks/add-artwork" element={<AddArtwork />} />
+            <Route path="/artworks/:id/edit-artwork" element={<EditArtwork />} />
         </Routes>
     )
 }
