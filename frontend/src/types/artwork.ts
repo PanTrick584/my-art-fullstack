@@ -11,5 +11,6 @@ export interface ArtworkFormType {
 export interface Artwork extends ArtworkFormType {
     id: number
     images: string[]
+    status: 'pending' | 'approved' | 'rejected'
+    ownerId: number | null
 }
-

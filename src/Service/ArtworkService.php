@@ -12,9 +12,9 @@ class ArtworkService
 {
     public function __construct(private ArtworkRepositoryInterface $artworkRepository) {}
 
-    public function getAllArtworks(int $id): array
+    public function getAllArtworks(int $id, string $role, int $ownerId, string $status): array
     {
-        return $this->artworkRepository->findAll($id);
+        return $this->artworkRepository->findAll($id, $role, $ownerId, $status);
     }
 
     public function createArtwork(CreateArtworkDto $dto, int $ownerId, string $role): Artwork

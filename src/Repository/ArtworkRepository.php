@@ -12,14 +12,40 @@ use PDOException;
 class ArtworkRepository implements ArtworkRepositoryInterface
 {
     public function __construct(private QueryBuilder $queryBuilder) {}
-    public function findAll(int $id): array
+    public function findAll(int $id, string $role, int $ownerId, string $status): array
     {
+        // SINGLE ARTWORK
         if (0 !== $id) {
-            $rows = $this->queryBuilder->table('artworks')
+            $rows = $this->queryBuilder
+                ->table('artworks')
                 ->where('id', '=', $id)
                 ->get();
+            // ADMIN PANEL VIEW
+        } elseif ($role === 'admin') {
+            $query = $this->queryBuilder->table('artworks');
+
+            if ($status !== '') $query->where('status', '=', $status);
+
+            $rows = $query->get();
+            // USER PANEL VIEW,
+        } elseif (0 !== $ownerId && $role === 'user') {
+            $rows = $this->queryBuilder
+                ->table('artworks')
+                ->where('owner_id', '=', $ownerId)
+                ->get();
+            // SINGLE USER APPROVED ARTWORKS
+        } elseif (0 !== $ownerId) {
+            $rows = $this->queryBuilder
+                ->table('artworks')
+                ->where('owner_id', '=', $ownerId)
+                ->where('status', '=', 'approved')
+                ->get();
+            // HOMEPAGE, ALL WITH APPROVED STATUS
         } else {
-            $rows = $this->queryBuilder->table('artworks')->get();
+            $rows = $this->queryBuilder
+                ->table('artworks')
+                ->where('status', '=', 'approved')
+                ->get();
         }
 
 
