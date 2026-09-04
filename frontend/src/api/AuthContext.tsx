@@ -1,13 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
 import { useApiClient } from "./ApiContext"
-
-interface AuthUser {
-    id: number
-    email: string
-    username: string
-    role: 'user' | 'admin'
-    createdAt: string
-}
+import type { AuthUser } from "../types/auth"
 
 interface AuthContextValue {
     currentUser: AuthUser | null
@@ -30,6 +23,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             .catch(() => setCurrentUser(null))
             .finally(() => setLoading(false))
     }, [apiFetch])
+
+    async function login(email: string, password: string) {
+        const user = await apiFetch<AuthUser>('/login', {
+            method: 'POST',
+            body: JSON.stringify({ email, password }),
+        })
+        setCurrentUser(user)
+    }
+
+    async function register(email: string, username: string, password: string) {
+        const user = await apiFetch<AuthUser>('/register', {
+            method: 'POST',
+            body: JSON.stringify({ email, username, password }),
+        })
+        setCurrentUser(user)
+    }
+
+    async function logout() {
+        await apiFetch<AuthUser>('/logout', {
+            method: 'POST',
+        })
+        setCurrentUser(null)
+    }
 
     return <AuthContext.Provider value={{ currentUser, loading, login, register, logout }}>{children}</AuthContext.Provider>
 }

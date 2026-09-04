@@ -3,14 +3,22 @@ import Home from './pages/Home'
 import Admin from './pages/Admin'
 import AddArtwork from './pages/AddArtwork'
 import EditArtwork from './pages/EditArtwork'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
     return (
         <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/artworks" element={<Admin />} />
-            <Route path="/artworks/add-artwork" element={<AddArtwork />} />
-            <Route path="/artworks/:id/edit-artwork" element={<EditArtwork />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+
+            <Route element={<ProtectedRoute />}>
+                <Route path="/artworks" element={<Admin />} />
+                <Route path="/artworks/add-artwork" element={<AddArtwork />} />
+                <Route path="/artworks/:id/edit-artwork" element={<EditArtwork />} />
+            </Route>
         </Routes>
     )
 }
