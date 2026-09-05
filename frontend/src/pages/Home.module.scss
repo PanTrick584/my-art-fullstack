@@ -1,8 +1,71 @@
-.heading {
-  text-align: center;
-  margin-top: 4rem;
+.page {
+    width: 100%;
+}
 
-  &:hover {
-    color: rebeccapurple;
-  }
+.header {
+    padding: 4rem 2rem 3rem;
+    text-align: center;
+
+    h1 {
+        font-size: 2.75rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        margin: 0 0 0.5rem;
+        color: var(--color-text);
+    }
+
+    p {
+        margin: 0;
+        color: var(--color-text-muted);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+    }
+}
+
+.status {
+    text-align: center;
+    color: var(--color-text-muted);
+    padding: 2rem;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 260px;
+    gap: 1.5rem;
+    width: 100%;
+    padding: 0 2rem 4rem;
+}
+
+.grid > div:nth-child(7n+1) {
+    grid-column: span 2;
+    grid-row: span 2;
+}
+
+.grid > div:nth-child(7n+4) {
+    grid-column: span 2;
+}
+
+.grid > div:nth-child(7n+6) {
+    grid-row: span 2;
+}
+
+@media (max-width: 900px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-auto-rows: 200px;
+    }
+
+    .grid > div {
+        grid-column: span 1 !important;
+        grid-row: span 1 !important;
+    }
+}
+
+@media (max-width: 520px) {
+    .grid {
+        grid-template-columns: 1fr;
+        padding: 0 1rem 3rem;
+    }
 }

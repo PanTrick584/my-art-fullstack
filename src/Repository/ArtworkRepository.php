@@ -50,17 +50,19 @@ class ArtworkRepository implements ArtworkRepositoryInterface
 
 
         return array_map(
-            fn(array $row) => new Artwork(
-                id: (int) $row['id'],
-                name: $row['name'],
-                category: $row['category'],
-                dimensions: $row['dimensions'],
-                yearOfCreation: $row['year_of_creation'],
-                price: $row['price'],
-                images: $row['images'] ?? [],
-                status: $row['status'],
-                ownerId: $row['owner_id'] !== null ? (int) $row['owner_id'] : null
-            ),
+            function (array $row) {
+                return new Artwork(
+                    id: (int) $row['id'],
+                    name: $row['name'],
+                    category: $row['category'],
+                    dimensions: $row['dimensions'],
+                    yearOfCreation: $row['year_of_creation'],
+                    price: $row['price'],
+                    images: $this->getImagesForArtwork((int) $row['id']),
+                    status: $row['status'],
+                    ownerId: $row['owner_id'] !== null ? (int) $row['owner_id'] : null
+                );
+            },
             $rows
         );
     }
@@ -119,7 +121,7 @@ class ArtworkRepository implements ArtworkRepositoryInterface
             dimensions: $dto->dimensions,
             yearOfCreation: $dto->yearOfCreation,
             price: $dto->price,
-            images: $dto->images,
+            images: $this->getImagesForArtwork((int) $row['id']),
             status: $status,
             ownerId: $row['owner_id'] !== null ? (int) $row['owner_id'] : null
         );
@@ -146,9 +148,15 @@ class ArtworkRepository implements ArtworkRepositoryInterface
             dimensions: $row['dimensions'],
             yearOfCreation: $row['year_of_creation'],
             price: $row['price'],
-            images: $row['images'] ?? [],
+            images: $this->getImagesForArtwork((int) $row['id']),
             status: $status,
             ownerId: $row['owner_id'] !== null ? (int) $row['owner_id'] : null
         );
+    }
+
+    private function getImagesForArtwork(int $artworkId): array
+    {
+        $rows = $this->queryBuilder->table('images')->where('artwork_id', '=', $artworkId)->get();
+        return array_map(fn(array $row) => $row['url'], $rows);
     }
 }
