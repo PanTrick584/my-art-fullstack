@@ -6,20 +6,24 @@ import EditArtwork from './pages/EditArtwork'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import ProtectedRoute from './components/ProtectedRoute'
+import Navbar from './components/Navbar'
 
 function App() {
     return (
-        <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+        <>
+            <Navbar />
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
 
-            <Route element={<ProtectedRoute />}>
-                <Route path="/artworks" element={<Admin />} />
-                <Route path="/artworks/add-artwork" element={<AddArtwork />} />
-                <Route path="/artworks/:id/edit-artwork" element={<EditArtwork />} />
-            </Route>
-        </Routes>
+                <Route element={<ProtectedRoute />}>
+                    <Route path="/artworks" element={<Admin />} />
+                    <Route path="/artworks/add-artwork" element={<AddArtwork />} />
+                    <Route path="/artworks/:id/edit-artwork" element={<EditArtwork />} />
+                </Route>
+            </Routes>
+        </>
     )
 }
 

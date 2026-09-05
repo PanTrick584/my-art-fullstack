@@ -5,6 +5,7 @@ import type { Artwork } from '../types/artwork'
 import { useAuth } from '../api/AuthContext'
 import { useState } from 'react'
 import { useApiClient } from '../api/ApiContext'
+import Lightbox from '../components/Lightbox'
 
 function Admin() {
     const [statusFilter, setStatusFilter] = useState('');
@@ -13,7 +14,7 @@ function Admin() {
     const { currentUser } = useAuth()
     const sortedArtworks = [...(artworks ?? [])].sort((a, b) => b.id - a.id);
     const apiFetch = useApiClient();
-    const { logout } = useAuth();
+    const [lightbox, setLightbox] = useState<{ artwork: Artwork; startIndex: number } | null>(null)
 
     async function handleStatusChange(id: number, status: 'approved' | 'rejected') {
         await apiFetch('/artworks/status', {
@@ -28,7 +29,6 @@ function Admin() {
         <div className={styles.wrapper}>
             <div className={styles.header}>
                 <h1>Prace</h1>
-                {currentUser && <button onClick={logout}>Wyloguj</button>}
                 <Link to="/artworks/add-artwork">Dodaj nową pracę</Link>
             </div>
 
@@ -48,6 +48,7 @@ function Admin() {
                 <table className={styles.table}>
                     <thead>
                         <tr>
+                            <th></th>
                             <th>Nazwa</th>
                             <th>Kategoria</th>
                             <th>Wymiary</th>
@@ -60,6 +61,16 @@ function Admin() {
                     <tbody>
                         {sortedArtworks.map((artwork) => (
                             <tr key={artwork.id}>
+                                <td>
+                                    {artwork.images.length > 0 && (
+                                        <img
+                                            className={styles.thumbnail}
+                                            src={artwork.images[0]}
+                                            alt={artwork.name}
+                                            onClick={() => setLightbox({ artwork, startIndex: 0 })}
+                                        />
+                                    )}
+                                </td>
                                 <td>
                                     <Link to={`/artworks/${artwork.id}/edit-artwork`}>
                                         {artwork.name}
@@ -82,6 +93,14 @@ function Admin() {
                         ))}
                     </tbody>
                 </table>
+            )}
+
+            {lightbox && (
+                <Lightbox
+                    artwork={lightbox.artwork}
+                    startIndex={lightbox.startIndex}
+                    onClose={() => setLightbox(null)}
+                />
             )}
         </div>
     )

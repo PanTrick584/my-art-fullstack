@@ -49,7 +49,7 @@ jobs:
         run: |
           rsync -avz --delete -e "ssh -p ${{ secrets.SSH_PORT }}" \
             --exclude='.git' --exclude='.github' --exclude='.env' \
-            --exclude='frontend/node_modules' --exclude='notes-private' \
+            --exclude='frontend/node_modules' --exclude='notes-private' --exclude='uploads' \
             ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/html/
 
       - name: Uruchom migracje na serwerze
