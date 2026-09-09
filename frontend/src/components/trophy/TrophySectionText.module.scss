@@ -1,0 +1,28 @@
+@mixin desktop {
+    @media all and (min-width: 1024px) {
+        @content;
+    }
+}
+
+.text {
+    padding: 200px 0;
+    font-size: 20px;
+    color: var(--color-text);
+    width: 80%;
+    max-width: 640px;
+    margin: 0 auto;
+    text-align: center;
+
+    &:first-of-type {
+        padding: 100px 0 200px;
+    }
+
+    @include desktop {
+        padding: 450px 0;
+        font-size: 28px;
+
+        &:first-of-type {
+            padding: 100px 0 450px;
+        }
+    }
+}
