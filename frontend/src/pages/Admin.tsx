@@ -29,7 +29,7 @@ function Admin() {
         <div className={styles.wrapper}>
             <div className={styles.header}>
                 <h1>Prace</h1>
-                <Link to="/artworks/add-artwork">Dodaj nową pracę</Link>
+                <Link to="/artworks/add-artwork">Dodaj nową pracę </Link>
             </div>
 
             {currentUser?.role === 'admin' && (
