@@ -17,7 +17,7 @@ function Navbar() {
 
     return (
         <nav className={styles.nav}>
-            <Link to="/" className={styles.brand}>Mad.Art</Link>
+            <Link to="/" className={styles.brand}>chodacki.art</Link>
 
             {onHome && (
                 <div className={styles.categories}>

@@ -18,7 +18,7 @@ function Home() {
     return (
         <div className={styles.page}>
             <header className={styles.header}>
-                <h1>Patryk chodacki</h1>
+                <h1>Patryk Chodacki</h1>
                 <p>rysunek malarstwo fotografia</p>
             </header>
 
