@@ -1,0 +1,28 @@
+@mixin desktop {
+    @media all and (min-width: 1024px) {
+        @content;
+    }
+}
+
+.single {
+    padding-bottom: 200px;
+    cursor: pointer;
+
+    @include desktop {
+        padding-bottom: 450px;
+    }
+
+    &.second {
+        padding-top: 200px;
+
+        @include desktop {
+            padding-top: 450px;
+        }
+    }
+
+    img {
+        width: 100%;
+        display: block;
+        object-fit: cover;
+    }
+}

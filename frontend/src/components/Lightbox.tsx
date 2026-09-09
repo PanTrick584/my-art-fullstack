@@ -1,16 +1,16 @@
 import { useEffect, useState, type MouseEvent } from 'react'
 import styles from './Lightbox.module.scss'
-import type { Artwork } from '../types/artwork'
 
 interface LightboxProps {
-    artwork: Artwork
+    images: string[]
+    title: string
     startIndex: number
     onClose: () => void
 }
 
-function Lightbox({ artwork, startIndex, onClose }: LightboxProps) {
+function Lightbox({ images, title, startIndex, onClose }: LightboxProps) {
     const [index, setIndex] = useState(startIndex)
-    const hasMultiple = artwork.images.length > 1
+    const hasMultiple = images.length > 1
 
     useEffect(() => {
         document.body.style.overflow = 'hidden'
@@ -28,20 +28,20 @@ function Lightbox({ artwork, startIndex, onClose }: LightboxProps) {
 
     function showPrev(event: MouseEvent) {
         event.stopPropagation()
-        setIndex((prev) => (prev - 1 + artwork.images.length) % artwork.images.length)
+        setIndex((prev) => (prev - 1 + images.length) % images.length)
     }
 
     function showNext(event: MouseEvent) {
         event.stopPropagation()
-        setIndex((prev) => (prev + 1) % artwork.images.length)
+        setIndex((prev) => (prev + 1) % images.length)
     }
 
     return (
         <div className={styles.backdrop} onClick={onClose}>
             <img
                 className={styles.image}
-                src={artwork.images[index]}
-                alt={artwork.name}
+                src={images[index]}
+                alt={title}
                 onClick={(event) => event.stopPropagation()}
             />
 
@@ -71,7 +71,7 @@ function Lightbox({ artwork, startIndex, onClose }: LightboxProps) {
             </button>
 
             <div className={styles.caption} onClick={(event) => event.stopPropagation()}>
-                {artwork.name}
+                {title}
             </div>
         </div>
     )

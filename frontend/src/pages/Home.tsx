@@ -40,7 +40,8 @@ function Home() {
 
             {lightbox && (
                 <Lightbox
-                    artwork={lightbox.artwork}
+                    images={lightbox.artwork.images}
+                    title={lightbox.artwork.name}
                     startIndex={lightbox.startIndex}
                     onClose={() => setLightbox(null)}
                 />

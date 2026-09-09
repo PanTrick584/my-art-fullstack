@@ -25,6 +25,27 @@ $entry = $manifest['src/main.tsx'];
 $scriptSrc = '/build/' . $entry['file'];
 $cssFiles = $entry['css'] ?? [];
 
+$siteUrl = 'https://chodackiart.pl';
+$defaultImage = $siteUrl . '/uploads/trophy/header-1.jpg';
+
+$seoByPath = [
+    '/' => [
+        'title' => 'Patryk Chodacki — portfolio',
+        'description' => 'Portfolio artystyczne Patryka Chodackiego — rysunek, malarstwo i fotografia.',
+    ],
+    '/trophy' => [
+        'title' => 'Trophy — Patryk Chodacki',
+        'description' => 'Trofeum — projekt fotograficzny Patryka Chodackiego o pamięci, sile i symbolach dominacji.',
+    ],
+];
+
+$seo = $seoByPath[$path] ?? [
+    'title' => 'Patryk Chodacki',
+    'description' => 'Portfolio artystyczne Patryka Chodackiego.',
+];
+
+$canonicalUrl = $siteUrl . $path;
+
 ?>
 <!doctype html>
 <html lang="pl">
@@ -32,7 +53,17 @@ $cssFiles = $entry['css'] ?? [];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Art</title>
+    <title><?= htmlspecialchars($seo['title']) ?></title>
+    <meta name="description" content="<?= htmlspecialchars($seo['description']) ?>">
+    <link rel="canonical" href="<?= htmlspecialchars($canonicalUrl) ?>">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="<?= htmlspecialchars($seo['title']) ?>">
+    <meta property="og:description" content="<?= htmlspecialchars($seo['description']) ?>">
+    <meta property="og:url" content="<?= htmlspecialchars($canonicalUrl) ?>">
+    <meta property="og:image" content="<?= htmlspecialchars($defaultImage) ?>">
+    <meta name="twitter:card" content="summary_large_image">
+
     <?php foreach ($cssFiles as $cssFile): ?>
         <link rel="stylesheet" href="/build/<?= htmlspecialchars($cssFile) ?>">
     <?php endforeach; ?>
