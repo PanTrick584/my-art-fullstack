@@ -1,7 +1,7 @@
-import { useState } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import Trophy from './pages/Trophy'
+import About from './pages/About'
 import Admin from './pages/Admin'
 import AddArtwork from './pages/AddArtwork'
 import EditArtwork from './pages/EditArtwork'
@@ -10,16 +10,17 @@ import Register from './pages/Register'
 import ProtectedRoute from './components/ProtectedRoute'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import ScrollToTop from './components/ScrollToTop'
 
 function App() {
-    const [trophyLang, setTrophyLang] = useState<'pl' | 'en'>('pl')
-
     return (
         <>
-            <Navbar trophyLang={trophyLang} onToggleTrophyLang={() => setTrophyLang((prev) => (prev === 'pl' ? 'en' : 'pl'))} />
+            <ScrollToTop />
+            <Navbar />
             <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/trophy" element={<Trophy lang={trophyLang} />} />
+                <Route path="/trophy" element={<Trophy />} />
+                <Route path="/about" element={<About />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
 

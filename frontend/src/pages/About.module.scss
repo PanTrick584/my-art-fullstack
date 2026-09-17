@@ -1,0 +1,54 @@
+.page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 4rem 2rem 5rem;
+}
+
+.section {
+    margin-bottom: 4rem;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+
+    h1 {
+        font-size: 2.25rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        margin: 0 0 1.5rem;
+    }
+
+    h2 {
+        font-size: 1.4rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        margin: 0 0 1.5rem;
+        color: var(--color-text-muted);
+    }
+
+    p {
+        font-size: 1.05rem;
+        line-height: 1.7;
+        margin: 0 0 1rem;
+    }
+
+    a {
+        color: var(--color-text);
+
+        &:hover {
+            color: var(--color-text-muted);
+        }
+    }
+}
+
+.demoList {
+    margin: 0 0 1rem;
+    padding-left: 1.25rem;
+    font-size: 1.05rem;
+    line-height: 1.7;
+
+    a {
+        font-family: monospace;
+        font-size: 0.95em;
+    }
+}

@@ -37,6 +37,10 @@ $seoByPath = [
         'title' => 'Trophy — Patryk Chodacki',
         'description' => 'Trofeum — projekt fotograficzny Patryka Chodackiego o pamięci, sile i symbolach dominacji.',
     ],
+    '/about' => [
+        'title' => 'O mnie — Patryk Chodacki',
+        'description' => 'O Patryku Chodackim i o tym, jak zbudowana jest ta strona (PHP, React, PostgreSQL, Docker).',
+    ],
 ];
 
 $seo = $seoByPath[$path] ?? [
