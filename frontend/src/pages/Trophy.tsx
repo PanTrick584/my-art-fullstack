@@ -4,8 +4,7 @@ import TrophySectionText from '../components/trophy/TrophySectionText'
 import TrophyImgGrid from '../components/trophy/TrophyImgGrid'
 import TrophyImgSingle from '../components/trophy/TrophyImgSingle'
 import Lightbox from '../components/Lightbox'
-
-export type Lang = 'pl' | 'en'
+import { useLang, type Lang } from '../api/LangContext'
 
 const TEXTS: Record<string, Record<Lang, string>> = {
     title: { pl: 'Trofeum', en: 'Trophy' },
@@ -52,7 +51,8 @@ const grids: { images: string[]; order: number }[] = [
     { images: ['piwnica-6.jpg', 'found-21.jpg', 'found-23.jpg'], order: 12 },
 ]
 
-function Trophy({ lang }: { lang: Lang }) {
+function Trophy() {
+    const { lang } = useLang()
     const [lightbox, setLightbox] = useState<string | null>(null)
 
     function t(key: keyof typeof TEXTS) {

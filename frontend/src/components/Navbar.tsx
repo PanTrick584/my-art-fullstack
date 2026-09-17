@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import styles from './Navbar.module.scss'
 import { useAuth } from '../api/AuthContext'
-import type { Lang } from '../pages/Trophy'
+import { useLang } from '../api/LangContext'
 
 const CATEGORIES: { value: string; label: string }[] = [
     { value: '', label: 'Wszystkie' },
@@ -11,17 +11,13 @@ const CATEGORIES: { value: string; label: string }[] = [
     { value: 'photography', label: 'Fotografia' },
 ]
 
-interface NavbarProps {
-    trophyLang: Lang
-    onToggleTrophyLang: () => void
-}
-
-function Navbar({ trophyLang, onToggleTrophyLang }: NavbarProps) {
+function Navbar() {
     const { currentUser, logout } = useAuth()
+    const { lang, toggleLang } = useLang()
     const location = useLocation()
     const activeCategory = new URLSearchParams(location.search).get('category') ?? ''
     const onHome = location.pathname === '/'
-    const onTrophy = location.pathname === '/trophy'
+    const showLangToggle = location.pathname === '/trophy' || location.pathname === '/about'
 
     const [hidden, setHidden] = useState(false)
     const lastScrollY = useRef(0)
@@ -44,6 +40,7 @@ function Navbar({ trophyLang, onToggleTrophyLang }: NavbarProps) {
             <div className={styles.primary}>
                 <Link to="/" className={styles.brand}>chodacki.art</Link>
                 <Link to="/trophy">Trophy</Link>
+                <Link to="/about">About</Link>
             </div>
 
             {onHome && (
@@ -61,9 +58,9 @@ function Navbar({ trophyLang, onToggleTrophyLang }: NavbarProps) {
             )}
 
             <div className={styles.links}>
-                {onTrophy && (
-                    <button type="button" onClick={onToggleTrophyLang}>
-                        {trophyLang === 'pl' ? 'EN' : 'PL'}
+                {showLangToggle && (
+                    <button type="button" onClick={toggleLang}>
+                        {lang === 'pl' ? 'EN' : 'PL'}
                     </button>
                 )}
                 {currentUser && (
