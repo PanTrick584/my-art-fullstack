@@ -46,6 +46,7 @@ $router->put('/api/artworks', $artworkController->update(...));
 $router->get('/api/images', $imageController->index(...));
 $router->post('/api/images', $imageController->store(...));
 $router->post('/api/images/bulk', $imageController->storeBulk(...));
+$router->delete('/api/images', $imageController->destroy(...));
 
 $router->get('/api/artworks/paintings', function () {
     header('Content-Type: application/json');

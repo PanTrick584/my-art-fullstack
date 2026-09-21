@@ -2,13 +2,14 @@ import { useParams } from "react-router-dom";
 import ArtworkForm from "../components/ArtworkForm";
 import { useApi } from "../hooks/useApi";
 import { useApiClient } from "../api/ApiContext";
-import type { Artwork, ArtworkFormType } from '../types/artwork'
+import type { Artwork, ArtworkFormType, Image } from '../types/artwork'
 
 function EditArtwork() {
     const { id } = useParams();
     const artworkId = Number(id);
 
     const { data, loading } = useApi<Artwork[]>(`/artworks?id=${artworkId}`)
+    const { data: images, loading: loadingImages } = useApi<Image[]>(`/images?artworkId=${artworkId}`)
 
     const [artwork] = data ?? [];
     const initialValue = {
@@ -28,7 +29,7 @@ function EditArtwork() {
         })
     }
 
-    if (loading) return <p>Ładowanie...</p>
+    if (loading || loadingImages) return <p>Ładowanie...</p>
     if (!artwork) return <p>Nie znalezioni tego arcydzieła, spróbuj ponownie</p>
 
     return (
@@ -37,6 +38,7 @@ function EditArtwork() {
                 initialValue={initialValue}
                 handler={updateArtwork}
                 componentState="edit"
+                existingImages={images ?? []}
             />
         </div>
     )

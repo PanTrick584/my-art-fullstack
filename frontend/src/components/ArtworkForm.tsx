@@ -1,12 +1,14 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import styles from './ArtworkForm.module.scss'
 import { useApiClient } from '../api/ApiContext'
-import type { Artwork, ArtworkFormType } from '../types/artwork'
+import type { Artwork, ArtworkFormType, Image } from '../types/artwork'
+import Lightbox from './Lightbox'
 
 interface InitialValueType {
     initialValue: ArtworkFormType,
     handler: (form: ArtworkFormType) => Promise<Artwork>,
-    componentState: 'add' | 'edit'
+    componentState: 'add' | 'edit',
+    existingImages?: Image[]
 }
 
 const TEXT = {
@@ -22,7 +24,7 @@ const TEXT = {
     }
 } as const;
 
-function ArtworkForm({ initialValue, handler, componentState }: InitialValueType) {
+function ArtworkForm({ initialValue, handler, componentState, existingImages }: InitialValueType) {
     const initialState: ArtworkFormType = {
         name: initialValue.name,
         category: initialValue.category,
@@ -38,6 +40,14 @@ function ArtworkForm({ initialValue, handler, componentState }: InitialValueType
     const [submitting, setSubmitting] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [success, setSuccess] = useState(false)
+    const [lightbox, setLightbox] = useState<number | null>(null)
+    const [currentImages, setCurrentImages] = useState<Image[] | undefined>(existingImages)
+
+    const previewUrls = useMemo(() => images.map((file) => URL.createObjectURL(file)), [images])
+
+    useEffect(() => {
+        return () => previewUrls.forEach((url) => URL.revokeObjectURL(url))
+    }, [previewUrls])
 
     const handleChange = (field: keyof ArtworkFormType) => (
         event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -63,10 +73,27 @@ function ArtworkForm({ initialValue, handler, componentState }: InitialValueType
                 formData.append('artworkId', String(artwork.id))
                 images.forEach((file) => formData.append('images[]', file))
 
+                const result = await apiFetch<{ message: string; images: Image[] }>('/images/bulk', {
+                    method: 'POST',
+                    body: formData,
+                })
+
+                setCurrentImages((prev) => [...(prev ?? []), ...result.images])
+
                 await apiFetch('/images/bulk', {
                     method: 'POST',
                     body: formData,
                 })
+            }
+
+            const removedImages = existingImages?.filter(
+                (original) => !currentImages?.some((current) => current.id === original.id)
+            ) ?? []
+
+            if (removedImages.length > 0) {
+                await Promise.all(
+                    removedImages.map((image) => apiFetch(`/images?id=${image.id}`, { method: 'DELETE' }))
+                )
             }
 
             setForm(componentState === 'add' ? initialState : artwork);
@@ -124,6 +151,39 @@ function ArtworkForm({ initialValue, handler, componentState }: InitialValueType
             </label>
             {images.length > 0 && <p>Wybrano {images.length} plik(ów).</p>}
 
+            <div className={styles.thumbnails}>
+                {currentImages?.map((image, index) => (
+                    <div className={styles.thumbnailWrapper} key={`saved-${index}`}>
+                        <img
+                            className={styles.thumbnail}
+                            src={image.url}
+                            onClick={() => setLightbox(index)}
+                        />
+                        <button
+                            type="button"
+                            className={styles.deleteButton}
+                            aria-label="Usuń zdjęcie"
+                            onClick={(event) => {
+                                event.stopPropagation()
+                                setCurrentImages(prev => prev?.filter(imgItem => imgItem.id !== image.id))
+                            }}
+                        >
+                            ×
+                        </button>
+                    </div>
+                ))}
+                {previewUrls.map((url, index) => (
+                    <img className={styles.thumbnail} src={url} key={`preview-${index}`} />
+                ))}
+            </div>
+            {!currentImages?.length ?
+                '' :
+                lightbox !== null && <Lightbox
+                    images={currentImages?.map(i => i.url) ?? []}
+                    title={form.name}
+                    startIndex={lightbox ?? 0}
+                    onClose={() => setLightbox(null)}
+                />}
             <button type="submit" disabled={submitting}>
                 {submitting ? 'Wysyłanie...' : text[componentState].submitButton}
             </button>

@@ -14,3 +14,9 @@ export interface Artwork extends ArtworkFormType {
     status: 'pending' | 'approved' | 'rejected'
     ownerId: number | null
 }
+
+export interface Image {
+    id: number,
+    artworkId: number,
+    url: string,
+}
