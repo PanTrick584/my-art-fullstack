@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Dto\CreateImageDto;
+use App\Http\Auth;
 use App\Service\ImageService;
 use InvalidArgumentException;
 use PDO;
@@ -66,5 +67,24 @@ class ImageController
         $image = $this->imageService->getByArtworkId($artworkId) ?? [];
 
         echo json_encode($image);
+    }
+    public function destroy(): void
+    {
+        Auth::requireLogin();
+
+        $id = (int) ($_GET['id'] ?? 0);
+
+        header('Content-Type: application/json');
+
+        try {
+            $this->imageService->deleteImage($id);
+        } catch (InvalidArgumentException $e) {
+            http_response_code(404);
+            echo json_encode(['error' => $e->getMessage()]);
+            return;
+        }
+
+        http_response_code(200);
+        echo json_encode(['message' => 'Image deleted']);
     }
 }

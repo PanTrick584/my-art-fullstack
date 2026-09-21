@@ -70,6 +70,16 @@ class QueryBuilder
         return (int) $stmt->fetchColumn();
     }
 
+    public function delete(): int
+    {
+        $sql = "DELETE FROM {$this->table}" . $this->whereClause() . " RETURNING id";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($this->bindings);
+
+        return (int) $stmt->fetchColumn();
+    }
+
     public function count(): int
     {
         $sql = "SELECT COUNT(*) FROM {$this->table}" . $this->whereClause();

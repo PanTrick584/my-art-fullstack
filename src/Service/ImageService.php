@@ -8,6 +8,7 @@ use App\Dto\CreateImageDto;
 use App\Entity\Image;
 use App\Repository\ImageRepository;
 use App\Storage\FileUploader;
+use InvalidArgumentException;
 use PDO;
 use RuntimeException;
 use Throwable;
@@ -55,5 +56,17 @@ class ImageService
         }
 
         return $images;
+    }
+
+    public function deleteImage(int $id): void
+    {
+        $image = $this->imageRepository->findById($id);
+
+        if ($image === null) {
+            throw new InvalidArgumentException("Image {$id} not found");
+        }
+
+        $this->imageRepository->delete($id);
+        @unlink(__DIR__ . '/../../uploads/' . basename($image->url));
     }
 }

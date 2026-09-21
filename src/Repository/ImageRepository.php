@@ -39,4 +39,22 @@ class ImageRepository
             $rows
         );
     }
+
+    public function findById(int $id): ?Image
+    {
+        $row = $this->queryBuilder->table('images')->where('id', '=', $id)->first();
+
+        if ($row === null) return null;
+
+        return new Image(
+            id: $id,
+            artworkId: (int) $row['artwork_id'],
+            url: $row['url']
+        );
+    }
+
+    public function delete(int $id): void
+    {
+        $this->queryBuilder->table('images')->where('id', '=', $id)->delete();
+    }
 }

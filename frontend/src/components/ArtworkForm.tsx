@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import styles from './ArtworkForm.module.scss'
 import { useApiClient } from '../api/ApiContext'
 import type { Artwork, ArtworkFormType, Image } from '../types/artwork'
@@ -43,6 +43,11 @@ function ArtworkForm({ initialValue, handler, componentState, existingImages }: 
     const [lightbox, setLightbox] = useState<number | null>(null)
     const [currentImages, setCurrentImages] = useState<Image[] | undefined>(existingImages)
 
+    const previewUrls = useMemo(() => images.map((file) => URL.createObjectURL(file)), [images])
+
+    useEffect(() => {
+        return () => previewUrls.forEach((url) => URL.revokeObjectURL(url))
+    }, [previewUrls])
 
     const handleChange = (field: keyof ArtworkFormType) => (
         event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -68,10 +73,27 @@ function ArtworkForm({ initialValue, handler, componentState, existingImages }: 
                 formData.append('artworkId', String(artwork.id))
                 images.forEach((file) => formData.append('images[]', file))
 
+                const result = await apiFetch<{ message: string; images: Image[] }>('/images/bulk', {
+                    method: 'POST',
+                    body: formData,
+                })
+
+                setCurrentImages((prev) => [...(prev ?? []), ...result.images])
+
                 await apiFetch('/images/bulk', {
                     method: 'POST',
                     body: formData,
                 })
+            }
+
+            const removedImages = existingImages?.filter(
+                (original) => !currentImages?.some((current) => current.id === original.id)
+            ) ?? []
+
+            if (removedImages.length > 0) {
+                await Promise.all(
+                    removedImages.map((image) => apiFetch(`/images?id=${image.id}`, { method: 'DELETE' }))
+                )
             }
 
             setForm(componentState === 'add' ? initialState : artwork);
@@ -131,7 +153,7 @@ function ArtworkForm({ initialValue, handler, componentState, existingImages }: 
 
             <div className={styles.thumbnails}>
                 {currentImages?.map((image, index) => (
-                    <div className={styles.thumbnailWrapper} key={index}>
+                    <div className={styles.thumbnailWrapper} key={`saved-${index}`}>
                         <img
                             className={styles.thumbnail}
                             src={image.url}
@@ -150,8 +172,11 @@ function ArtworkForm({ initialValue, handler, componentState, existingImages }: 
                         </button>
                     </div>
                 ))}
+                {previewUrls.map((url, index) => (
+                    <img className={styles.thumbnail} src={url} key={`preview-${index}`} />
+                ))}
             </div>
-            {componentState !== 'edit' || !currentImages?.length ?
+            {!currentImages?.length ?
                 '' :
                 lightbox !== null && <Lightbox
                     images={currentImages?.map(i => i.url) ?? []}
