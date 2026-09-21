@@ -1,12 +1,14 @@
 import { useState, type FormEvent } from 'react'
 import styles from './ArtworkForm.module.scss'
 import { useApiClient } from '../api/ApiContext'
-import type { Artwork, ArtworkFormType } from '../types/artwork'
+import type { Artwork, ArtworkFormType, Image } from '../types/artwork'
+import Lightbox from './Lightbox'
 
 interface InitialValueType {
     initialValue: ArtworkFormType,
     handler: (form: ArtworkFormType) => Promise<Artwork>,
-    componentState: 'add' | 'edit'
+    componentState: 'add' | 'edit',
+    existingImages?: Image[]
 }
 
 const TEXT = {
@@ -22,7 +24,7 @@ const TEXT = {
     }
 } as const;
 
-function ArtworkForm({ initialValue, handler, componentState }: InitialValueType) {
+function ArtworkForm({ initialValue, handler, componentState, existingImages }: InitialValueType) {
     const initialState: ArtworkFormType = {
         name: initialValue.name,
         category: initialValue.category,
@@ -38,6 +40,9 @@ function ArtworkForm({ initialValue, handler, componentState }: InitialValueType
     const [submitting, setSubmitting] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [success, setSuccess] = useState(false)
+    const [lightbox, setLightbox] = useState<number | null>(null)
+    const [currentImages, setCurrentImages] = useState<Image[] | undefined>(existingImages)
+
 
     const handleChange = (field: keyof ArtworkFormType) => (
         event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -124,6 +129,36 @@ function ArtworkForm({ initialValue, handler, componentState }: InitialValueType
             </label>
             {images.length > 0 && <p>Wybrano {images.length} plik(ów).</p>}
 
+            <div className={styles.thumbnails}>
+                {currentImages?.map((image, index) => (
+                    <div className={styles.thumbnailWrapper} key={index}>
+                        <img
+                            className={styles.thumbnail}
+                            src={image.url}
+                            onClick={() => setLightbox(index)}
+                        />
+                        <button
+                            type="button"
+                            className={styles.deleteButton}
+                            aria-label="Usuń zdjęcie"
+                            onClick={(event) => {
+                                event.stopPropagation()
+                                setCurrentImages(prev => prev?.filter(imgItem => imgItem.id !== image.id))
+                            }}
+                        >
+                            ×
+                        </button>
+                    </div>
+                ))}
+            </div>
+            {componentState !== 'edit' || !currentImages?.length ?
+                '' :
+                lightbox !== null && <Lightbox
+                    images={currentImages?.map(i => i.url) ?? []}
+                    title={form.name}
+                    startIndex={lightbox ?? 0}
+                    onClose={() => setLightbox(null)}
+                />}
             <button type="submit" disabled={submitting}>
                 {submitting ? 'Wysyłanie...' : text[componentState].submitButton}
             </button>
