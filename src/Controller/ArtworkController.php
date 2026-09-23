@@ -94,4 +94,24 @@ class ArtworkController
         http_response_code(200);
         echo json_encode($artwork);
     }
+
+    public function destroy(): void
+    {
+        Auth::requireRole('admin');
+
+        $id = (int) ($_GET['id'] ?? 0);
+
+        header('Content-Type: application/json');
+
+        try {
+            $this->artworkService->deleteArtwork($id);
+        } catch (InvalidArgumentException $e) {
+            http_response_code(404);
+            echo json_encode(['error' => $e->getMessage()]);
+            return;
+        }
+
+        http_response_code(200);
+        echo json_encode(['message' => 'Artwork deleted!']);
+    }
 }

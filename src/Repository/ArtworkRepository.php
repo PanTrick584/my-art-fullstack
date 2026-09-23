@@ -159,4 +159,9 @@ class ArtworkRepository implements ArtworkRepositoryInterface
         $rows = $this->queryBuilder->table('images')->where('artwork_id', '=', $artworkId)->get();
         return array_map(fn(array $row) => $row['url'], $rows);
     }
+
+    public function delete(int $id): void
+    {
+        $this->queryBuilder->table('artworks')->where('id', '=', $id)->delete();
+    }
 }

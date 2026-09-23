@@ -9,6 +9,7 @@ import Lightbox from '../components/Lightbox'
 
 function Admin() {
     const [statusFilter, setStatusFilter] = useState('');
+    const [categoryFilter, setCategoryFilter] = useState('');
     const path = statusFilter ? `/artworks?status=${statusFilter}` : '/artworks'
     const { data: artworks, loading, error } = useApi<Artwork[]>(path)
     const { currentUser } = useAuth()
@@ -22,6 +23,13 @@ function Admin() {
             body: JSON.stringify({ id, status }),
         })
 
+        window.location.reload()
+    }
+
+    async function handleDelete(id: number) {
+        if (!window.confirm('Na pewno usunąć tę pracę? Tej operacji nie można cofnąć.')) return
+
+        await apiFetch(`/artworks?id=${id}`, { method: 'DELETE' })
         window.location.reload()
     }
 
@@ -40,6 +48,13 @@ function Admin() {
                     <option value="rejected">Rejected</option>
                 </select>
             )}
+
+            <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
+                <option value="">Wszystkie</option>
+                <option value="drawing">Rysunek</option>
+                <option value="painting">Malarstwo</option>
+                <option value="photography">Fotografia</option>
+            </select>
 
             {loading && <p>Ładowanie...</p>}
             {error && <p role="alert">Błąd: {error}</p>}
@@ -87,6 +102,9 @@ function Admin() {
                                             <button onClick={() => handleStatusChange(artwork.id, 'approved')}>Zatwierdź</button>
                                             <button onClick={() => handleStatusChange(artwork.id, 'rejected')}>Odrzuć</button>
                                         </>
+                                    )}
+                                    {currentUser?.role === 'admin' && (
+                                        <button onClick={() => handleDelete(artwork.id)}>Usuń</button>
                                     )}
                                 </td>
                             </tr>
