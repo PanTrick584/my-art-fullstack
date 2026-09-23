@@ -16,4 +16,6 @@ interface ArtworkRepositoryInterface
     public function update(int $id, CreateArtworkDto $dto, string $status): Artwork;
 
     public function updateStatus(int $id, string $status): Artwork;
+
+    public function delete(int $id): void;
 }

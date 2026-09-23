@@ -22,10 +22,11 @@ $pdo = Connection::create();
 $queryBuilder = new QueryBuilder($pdo);
 
 $artworkRepository = new ArtworkRepository($queryBuilder);
-$artworkService = new ArtworkService($artworkRepository);
+$imageRepository = new ImageRepository($queryBuilder);
+
+$artworkService = new ArtworkService($artworkRepository, $imageRepository);
 $artworkController = new ArtworkController($artworkService);
 
-$imageRepository = new ImageRepository($queryBuilder);
 $imageService = new ImageService($imageRepository, $pdo);
 $imageController = new ImageController($imageService, $pdo);
 
@@ -42,6 +43,7 @@ $router->get('/api/hello', function () {
 $router->get('/api/artworks', $artworkController->index(...));
 $router->post('/api/artworks', $artworkController->store(...));
 $router->put('/api/artworks', $artworkController->update(...));
+$router->delete('/api/artworks', $artworkController->destroy(...));
 // IMAGES
 $router->get('/api/images', $imageController->index(...));
 $router->post('/api/images', $imageController->store(...));

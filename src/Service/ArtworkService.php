@@ -7,10 +7,14 @@ namespace App\Service;
 use App\Dto\CreateArtworkDto;
 use App\Entity\Artwork;
 use App\Repository\ArtworkRepositoryInterface;
+use App\Repository\ImageRepository;
 
 class ArtworkService
 {
-    public function __construct(private ArtworkRepositoryInterface $artworkRepository) {}
+    public function __construct(
+        private ArtworkRepositoryInterface $artworkRepository,
+        private ImageRepository $imageRepository
+    ) {}
 
     public function getAllArtworks(int $id, string $role, int $ownerId, string $status): array
     {
@@ -32,5 +36,16 @@ class ArtworkService
     public function updateStatus(int $id, string $status): Artwork
     {
         return $this->artworkRepository->updateStatus($id, $status);
+    }
+
+    public function deleteArtwork(int $id): void
+    {
+        $images = $this->imageRepository->findByArtworkId($id);
+
+        $this->artworkRepository->delete($id);
+
+        foreach ($images as $image) {
+            @unlink(__DIR__ . '/../../uploads/' . basename($image->url));
+        }
     }
 }

@@ -68,6 +68,7 @@ class ImageController
 
         echo json_encode($image);
     }
+
     public function destroy(): void
     {
         Auth::requireLogin();
